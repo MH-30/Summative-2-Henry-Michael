@@ -1,3 +1,5 @@
+package com.company.bookstore.AuthorModel;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -28,9 +30,9 @@ public class Author implements Serializable {
 
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
-    private Set<Book> books = new HashSet<Book>();
+    private Set<Book> books = new HashSet<Book>();*/
 
     public int getAuthorId() {
         return authorId;
