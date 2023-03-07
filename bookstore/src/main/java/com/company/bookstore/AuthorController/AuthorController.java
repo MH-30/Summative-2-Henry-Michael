@@ -42,15 +42,15 @@ public class AuthorController {
     public void updateAuthor(@PathVariable Integer id, @RequestBody Author author) {
         Optional<Author> authorOptional = authorRepo.findById(id);
         if (!authorOptional.isPresent()) return;
-        Author currentAuthor = authorOptional.get();
-        currentAuthor.setFirstName(author.getFirstName());
-        currentAuthor.setLastName(author.getLastName());
-        currentAuthor.setStreet(author.getStreet());
-        currentAuthor.setCity(author.getCity());
-        currentAuthor.setState(author.getState());
-        currentAuthor.setPostalCode(author.getPostalCode());
-        currentAuthor.setPhone(author.getPhone());
-        currentAuthor.setEmail(author.getEmail());
+        Author searchedAuthor = authorOptional.get();
+        searchedAuthor.setFirstName(author.getFirstName());
+        searchedAuthor.setLastName(author.getLastName());
+        searchedAuthor.setStreet(author.getStreet());
+        searchedAuthor.setCity(author.getCity());
+        searchedAuthor.setState(author.getState());
+        searchedAuthor.setPostalCode(author.getPostalCode());
+        searchedAuthor.setPhone(author.getPhone());
+        searchedAuthor.setEmail(author.getEmail());
     }
 
     //Delete
