@@ -21,26 +21,26 @@ public class Book {
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
-    private Author author;
+    private Integer authorId;
 
     @Column(name = "title", nullable = false)
     private String title;
 
     @ManyToOne
     @JoinColumn(name = "publisher_id", nullable = false)
-    private Publisher publisher;
+    private Integer publisherId;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
     public Book() {}
 
-    public Book(String isbn, LocalDate publishDate, Author author, String title, Publisher publisher, BigDecimal price) {
+    public Book(String isbn, LocalDate publishDate, Integer authorId, String title, Integer publisherId, BigDecimal price) {
         this.isbn = isbn;
         this.publishDate = publishDate;
-        this.author = author;
+        this.authorId = authorId;
         this.title = title;
-        this.publisher = publisher;
+        this.publisherId = publisherId;
         this.price = price;
     }
 
@@ -68,12 +68,12 @@ public class Book {
         this.publishDate = publishDate;
     }
 
-    public Author getAuthor() {
-        return author;
+    public Integer getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
     }
 
     public String getTitle() {
@@ -84,12 +84,12 @@ public class Book {
         this.title = title;
     }
 
-    public Publisher getPublisher() {
-        return publisher;
+    public Integer getPublisherId() {
+        return publisherId;
     }
 
-    public void setPublisher(Publisher publisher) {
-        this.publisher = publisher;
+    public void setPublisherId(Integer publisherId) {
+        this.publisherId = publisherId;
     }
 
     public BigDecimal getPrice() {
