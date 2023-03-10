@@ -1,13 +1,16 @@
-package com.company.bookstore.AuthorModel;
+package com.company.bookstore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "author")
-public class Author implements Serializable {
+public class Author {
     // author_id int not null auto_increment primary key,
     @Id
     @Column(name = "author_id")
@@ -30,9 +33,21 @@ public class Author implements Serializable {
 
     private String email;
 
-    /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
-    private Set<Book> books = new HashSet<Book>();*/
+    private Set<Book> books = new HashSet<Book>();
+    public Author() {}
+    public Author(String firstName, String lastName, String street, String city, String state, String postalCode, String phone, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.postalCode = postalCode;
+        this.phone = phone;
+        this.email = email;
+    }
 
     public int getAuthorId() {
         return authorId;

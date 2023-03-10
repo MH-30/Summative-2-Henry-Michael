@@ -1,13 +1,15 @@
 package com.company.bookstore.AuthorController;
 
-import com.company.bookstore.AuthorModel.Author;
-import com.company.bookstore.AuthorRepository.AuthorRepository;
+import com.company.bookstore.model.Author;
+import com.company.bookstore.repository.AuthorRepository;
+import com.company.bookstore.controller.AuthorController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,22 +17,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.transaction.Transactional;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
-@SpringBootTest
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(AuthorController.class)
-@Transactional
 public class AuthorControllerTest {
 
-    @Autowired
+    @MockBean
     private AuthorRepository authorRepo;
 
     @Autowired
@@ -57,7 +53,7 @@ public class AuthorControllerTest {
         String inputJson = objectMapper.writeValueAsString(author);
 
         // Test to see of author was created
-        mockMvc.perform(put("/authors").content(inputJson).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/authors").content(inputJson).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
@@ -143,18 +139,17 @@ public class AuthorControllerTest {
         author.setPhone("123-456-7890");
         author.setEmail("jscott449@gmail.com");
 
-        Author updatedAuthor = authorRepo.save(author);
+        authorRepo.save(author);
 
-        updatedAuthor.setStreet("South Palace Ave");
+        /*updatedAuthor.setStreet("South Palace Ave");
         updatedAuthor.setCity("Beverly City");
         updatedAuthor.setState("Wyoming");
         updatedAuthor.setPostalCode("54321");
-        updatedAuthor.setPhone("987-654-3210");
+        updatedAuthor.setPhone("987-654-3210");*/
 
         // Converted updatedAuthor to Json
-        String inputJson = objectMapper.writeValueAsString(updatedAuthor);
-        mockMvc.perform(MockMvcRequestBuilders.post("/authors").content(inputJson)
-                .contentType(MediaType.APPLICATION_JSON))
+        String inputJson = objectMapper.writeValueAsString(author);
+        mockMvc.perform(put("/authors/1").content(inputJson).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
@@ -175,7 +170,7 @@ public class AuthorControllerTest {
         authorRepo.save(author1);
 
         mockMvc.perform(
-                        delete("/customers/1"))
+                        delete("/authors/1"))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
