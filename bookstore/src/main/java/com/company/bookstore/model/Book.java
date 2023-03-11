@@ -1,12 +1,14 @@
 package com.company.bookstore.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "book")
-public class Book {
+public class Book implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,15 +21,15 @@ public class Book {
     @Column(name = "publish_date", nullable = false)
     private LocalDate publishDate;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
+    //@ManyToOne
+    @Column(name = "author_id", nullable = false)
     private Integer authorId;
 
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "publisher_id", nullable = false)
+    //@ManyToOne
+    @Column(name = "publisher_id", nullable = false)
     private Integer publisherId;
 
     @Column(name = "price", nullable = false)
@@ -98,5 +100,18 @@ public class Book {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id) && Objects.equals(isbn, book.isbn) && Objects.equals(publishDate, book.publishDate) && Objects.equals(authorId, book.authorId) && Objects.equals(title, book.title) && Objects.equals(publisherId, book.publisherId) && Objects.equals(price, book.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, isbn, publishDate, authorId, title, publisherId, price);
     }
 }

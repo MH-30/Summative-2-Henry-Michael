@@ -36,11 +36,18 @@ public class AuthorRepositoryTest {
     private ObjectMapper objectMapper;
 */
     @Autowired
+    private PublisherRepository publisherRepository;
+    @Autowired
     private AuthorRepository authorRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     @Before
     public void setUp() throws Exception {
+        bookRepository.deleteAll();
         authorRepository.deleteAll();
+        publisherRepository.deleteAll();
     }
 
     @Test
@@ -120,7 +127,7 @@ public class AuthorRepositoryTest {
         authorRepository.save(author3);
 
         List<Author> listOfAuthors = authorRepository.findAll();
-        assertEquals(listOfAuthors.size(), 3);
+        assertEquals(3, listOfAuthors.size());
     }
 
     @Test

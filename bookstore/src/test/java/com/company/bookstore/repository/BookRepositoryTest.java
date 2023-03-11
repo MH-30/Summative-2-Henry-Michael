@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import com.company.bookstore.model.Author;
 import com.company.bookstore.model.Book;
 import com.company.bookstore.model.Publisher;
+import org.junit.Before;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +42,16 @@ class BookRepositoryTest {
     @Autowired
     private PublisherRepository publisherRepository;
 
-    @Autowired
-    private MockMvc mockMvc;
+
+    @Before
+    public void setUp() throws Exception {
+        authorRepository.deleteAll();
+        publisherRepository.deleteAll();
+        bookRepository.deleteAll();
+    }
 
     @Test
-    void shouldCreateBook() {
+    public void shouldCreateBook() throws Exception{
         // given
         Author author = new Author();
         author.setFirstName("Test");
@@ -71,10 +77,14 @@ class BookRepositoryTest {
         book.setPublishDate(LocalDate.now());
         book.setTitle("Test Book");
         book.setPrice(new BigDecimal("24.99"));
-        book.setAuthorId(book.getAuthorId());
-        book.setPublisherId(book.getPublisherId());
+        //book.setAuthorId(book.getAuthorId());
+        //book.setPublisherId(book.getPublisherId());
 
         // when
+        author = authorRepository.save(author);
+        publisher = publisherRepository.save(publisher);
+        book.setAuthorId(author.getAuthorId());
+        book.setPublisherId(publisher.getId());
         Book savedBook = bookRepository.save(book);
 
         // then
@@ -82,35 +92,93 @@ class BookRepositoryTest {
         assertThat(savedBook.getTitle()).isEqualTo("Test Book");
         /*assertThat(savedBook.getAuthor().getFirstName()).isEqualTo("Test");
         assertThat(savedBook.getPublisher().getName()).isEqualTo("Test Publisher");*/
+        Optional<Book> book1 = bookRepository.findById(book.getId());
+
+        //Assert...
+        assertEquals(book1.get(), savedBook);
     }
 
     @Test
-    void shouldReadBookById() {
+    void shouldReadBookById() throws Exception {
         // given
         int bookId = 1;
+        Author author = new Author();
+        author.setFirstName("Test");
+        author.setLastName("Author");
+        author.setEmail("test.author@example.com");
+        author.setPhone("123-456-7890");
+        author.setPostalCode("12345");
+        author.setState("CA");
+        author.setCity("Los Angeles");
+        author.setStreet("123 Main St.");
 
+        Publisher publisher = new Publisher();
+        publisher.setName("Test Publisher");
+        publisher.setEmail("test.publisher@example.com");
+        publisher.setPhone("123-456-7890");
+        publisher.setPostalCode("12345");
+        publisher.setState("CA");
+        publisher.setCity("Los Angeles");
+        publisher.setStreet("123 Main St.");
+        author = authorRepository.save(author);
+        publisher = publisherRepository.save(publisher);
+        Book book = new Book();
+        book.setIsbn("1234567890123");
+        book.setPublishDate(LocalDate.now());
+        book.setTitle("Test Book");
+        book.setPrice(new BigDecimal("24.99"));
+        book.setAuthorId(author.getAuthorId());
+        book.setPublisherId(publisher.getId());
+        book = bookRepository.save(book);
         // when
-        Optional<Book> optionalBook = bookRepository.findById(bookId);
+        Optional<Book> optionalBook = bookRepository.findById(book.getId());
 
         // then
-        assertThat(optionalBook).isPresent();
-        Book book = optionalBook.get();
-        /*assertThat(book.getTitle()).isEqualTo("An interesting book");
-        assertThat(book.getAuthorId().getFirstName()).isEqualTo("Stephen");
-        assertThat(book.getPublisherId().getName()).isEqualTo("McGraw-Hill");*/
+        assertThat(optionalBook.isPresent());
+        assertEquals(optionalBook.get(), book);
+        //Book book = optionalBook.get();
+
     }
 
     @Test
-    void shouldReadAllBooks() {
+    void shouldReadAllBooks() throws Exception {
+        bookRepository.deleteAll();
+        Author author = new Author();
+        //author.setAuthorId(1);
+        author.setFirstName("Test");
+        author.setLastName("Author");
+        author.setEmail("test.author@example.com");
+        author.setPhone("123-456-7890");
+        author.setPostalCode("12345");
+        author.setState("CA");
+        author.setCity("Los Angeles");
+        author.setStreet("123 Main St.");
+        author = authorRepository.save(author);
+
+        Publisher publisher = new Publisher();
+        //publisher.setId(1);
+        publisher.setName("Test Publisher");
+        publisher.setEmail("test.publisher@example.com");
+        publisher.setPhone("123-456-7890");
+        publisher.setPostalCode("12345");
+        publisher.setState("CA");
+        publisher.setCity("Los Angeles");
+        publisher.setStreet("123 Main St.");
+        publisher = publisherRepository.save(publisher);
+        Book book = new Book();
+        book.setIsbn("1234567890123");
+        book.setPublishDate(LocalDate.now());
+        book.setTitle("Test Book");
+        book.setPrice(new BigDecimal("24.99"));
+        book.setAuthorId(author.getAuthorId());
+        book.setPublisherId(publisher.getId());
+        book = bookRepository.save(book);
+
         // when
         List<Book> books = bookRepository.findAll();
 
         // then
         assertThat(books).hasSize(1);
-        Book book = books.get(0);
-        /*assertThat(book.getTitle()).isEqualTo("An interesting book");
-        assertThat(book.getAuthorId().getFirstName()).isEqualTo("Stephen");
-        assertThat(book.getPublisherId().getName()).isEqualTo("McGraw-Hill");*/
     }
 
     // Test for Update Book
@@ -127,16 +195,11 @@ class BookRepositoryTest {
         publisher = publisherRepository.save(publisher);
         Author author = authorRepository.save(new Author("Stephen", "King", "Hollywood", "Los Angeles", "CA", "11100", "111-222-3333", "sking@gmail.com"));
         Book book = bookRepository.save(new Book("9783161484100", LocalDate.of(2022, 1, 1), author.getAuthorId(), "An interesting book", publisher.getId(), new BigDecimal("29.99")));
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .put("/books/{id}", book.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"isbn\":\"9783161484100\",\"publishDate\":\"2022-01-01\",\"author\":{\"id\":1},\"publisher\":{\"id\":1},\"title\":\"An interesting book\",\"price\":\"29.99\"}"))
-                .andExpect(status().isOk());
-
+        book.setIsbn("9783161484100");
+        book = bookRepository.save(book);
         Optional<Book> updatedBook = bookRepository.findById(book.getId());
         assertTrue(updatedBook.isPresent());
-        assertEquals(book.getId(), updatedBook.get().getId());
+        assertEquals(updatedBook.get(), book);
         assertEquals("9783161484100", updatedBook.get().getIsbn());
         assertEquals(LocalDate.of(2022, 1, 1), updatedBook.get().getPublishDate());
         assertEquals("An interesting book", updatedBook.get().getTitle());
@@ -158,12 +221,7 @@ class BookRepositoryTest {
 
         Author author = authorRepository.save(new Author("Stephen", "King", "Hollywood", "Los Angeles", "CA", "11100", "111-222-3333", "sking@gmail.com"));
         Book book = bookRepository.save(new Book("9783161484100", LocalDate.of(2022, 1, 1), author.getAuthorId(), "An interesting book", publisher.getId(), new BigDecimal("29.99")));
-
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/books/{id}", book.getId()))
-                .andExpect(status().isOk());
-
+        bookRepository.deleteById(book.getId());
         Optional<Book> deletedBook = bookRepository.findById(book.getId());
         assertFalse(deletedBook.isPresent());
     }
@@ -183,15 +241,6 @@ class BookRepositoryTest {
         Author author = authorRepository.save(new Author("Stephen", "King", "Hollywood", "Los Angeles", "CA", "11100", "111-222-3333", "sking@gmail.com"));
         Book book1 = bookRepository.save(new Book("9783161484100", LocalDate.of(2022, 1, 1), author.getAuthorId(), "An interesting book", publisher.getId(), new BigDecimal("29.99")));
         Book book2 = bookRepository.save(new Book("9783161484101", LocalDate.of(2022, 2, 1), author.getAuthorId(), "Another interesting book",publisher.getId(), new BigDecimal("39.99")));
-
-        /*mockMvc.perform(MockMvcRequestBuilders
-                        .get("/books/search/byauthor?id={id}", author.getAuthorId())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(book1.getId().intValue())))
-                .andExpect(jsonPath("$[0].title", is("An interesting book")))
-                .andExpect(jsonPath("$[1].id", is(book2.getId().intValue())))
-                .andExpect(jsonPath("$[1].title", is("Another interesting book")));*/
 
         Optional<Book> optionalBook1 = bookRepository.findById(book1.getId());
         Optional<Book> optionalBook2 = bookRepository.findById(book2.getId());

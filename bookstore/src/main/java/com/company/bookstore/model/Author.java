@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "author")
-public class Author {
+public class Author implements Serializable {
     // author_id int not null auto_increment primary key,
     @Id
     @Column(name = "author_id")

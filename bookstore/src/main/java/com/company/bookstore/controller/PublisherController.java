@@ -30,7 +30,7 @@ public class PublisherController {
             Publisher publisher = publisherOptional.get();
             return new ResponseEntity<>(publisher, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping
@@ -52,9 +52,9 @@ public class PublisherController {
             existingPublisher.setPhone(publisher.getPhone());
             existingPublisher.setEmail(publisher.getEmail());
             Publisher updatedPublisher = publisherRepository.save(existingPublisher);
-            return new ResponseEntity<>(updatedPublisher, HttpStatus.OK);
+            return new ResponseEntity<>(updatedPublisher, HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")
@@ -64,6 +64,6 @@ public class PublisherController {
             publisherRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

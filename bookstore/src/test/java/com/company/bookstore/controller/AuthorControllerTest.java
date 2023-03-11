@@ -1,4 +1,4 @@
-package com.company.bookstore.AuthorController;
+package com.company.bookstore.controller;
 
 import com.company.bookstore.model.Author;
 import com.company.bookstore.repository.AuthorRepository;

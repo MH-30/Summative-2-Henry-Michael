@@ -2,10 +2,12 @@ package com.company.bookstore.GraphController;
 
 
 import com.company.bookstore.model.Author;
+import com.company.bookstore.model.Book;
 import com.company.bookstore.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -36,6 +38,12 @@ public class GraphController {
         return null;
     }
 
+    @SchemaMapping
+    public Author author(Book book) {
+        Optional<Author> optionalAuthor = authorRepository.findById(book.getId());
+        if (optionalAuthor.isPresent()) return optionalAuthor.get();
+        return null;
+    }
     /*
     * @QueryMapping
     public Publisher findPublisherById(@Argument Integer publisher_id) {
