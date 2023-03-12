@@ -1,10 +1,14 @@
- import javax.persistence.*;
+package com.company.bookstore.model;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "book")
-public class Book {
+public class Book implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,28 +21,28 @@ public class Book {
     @Column(name = "publish_date", nullable = false)
     private LocalDate publishDate;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
-    private Author author;
+    //@ManyToOne
+    @Column(name = "author_id", nullable = false)
+    private Integer authorId;
 
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "publisher_id", nullable = false)
-    private Publisher publisher;
+    //@ManyToOne
+    @Column(name = "publisher_id", nullable = false)
+    private Integer publisherId;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
     public Book() {}
 
-    public Book(String isbn, LocalDate publishDate, Author author, String title, Publisher publisher, BigDecimal price) {
+    public Book(String isbn, LocalDate publishDate, Integer authorId, String title, Integer publisherId, BigDecimal price) {
         this.isbn = isbn;
         this.publishDate = publishDate;
-        this.author = author;
+        this.authorId = authorId;
         this.title = title;
-        this.publisher = publisher;
+        this.publisherId = publisherId;
         this.price = price;
     }
 
@@ -66,12 +70,12 @@ public class Book {
         this.publishDate = publishDate;
     }
 
-    public Author getAuthor() {
-        return author;
+    public Integer getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
     }
 
     public String getTitle() {
@@ -82,12 +86,12 @@ public class Book {
         this.title = title;
     }
 
-    public Publisher getPublisher() {
-        return publisher;
+    public Integer getPublisherId() {
+        return publisherId;
     }
 
-    public void setPublisher(Publisher publisher) {
-        this.publisher = publisher;
+    public void setPublisherId(Integer publisherId) {
+        this.publisherId = publisherId;
     }
 
     public BigDecimal getPrice() {
@@ -96,5 +100,18 @@ public class Book {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id) && Objects.equals(isbn, book.isbn) && Objects.equals(publishDate, book.publishDate) && Objects.equals(authorId, book.authorId) && Objects.equals(title, book.title) && Objects.equals(publisherId, book.publisherId) && Objects.equals(price, book.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, isbn, publishDate, authorId, title, publisherId, price);
     }
 }

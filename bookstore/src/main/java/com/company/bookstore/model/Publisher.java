@@ -1,4 +1,9 @@
+package com.company.bookstore.model;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "publisher")
@@ -29,6 +34,10 @@ public class Publisher {
 
     @Column(name = "email")
     private String email;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "publisher_id")
+    private Set<Book> books = new HashSet<Book>();
 
     public Publisher() {
     }
@@ -105,5 +114,18 @@ public class Publisher {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Publisher)) return false;
+        Publisher publisher = (Publisher) o;
+        return Objects.equals(id, publisher.id) && Objects.equals(name, publisher.name) && Objects.equals(street, publisher.street) && Objects.equals(city, publisher.city) && Objects.equals(state, publisher.state) && Objects.equals(postalCode, publisher.postalCode) && Objects.equals(phone, publisher.phone) && Objects.equals(email, publisher.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, street, city, state, postalCode, phone, email);
     }
 }
