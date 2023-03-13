@@ -45,9 +45,19 @@ public class GraphController {
 
     @SchemaMapping
     public Author author(Book book) {
-        Optional<Author> optionalAuthor = authorRepository.findById(book.getId());
+        Optional<Author> optionalAuthor = authorRepository.findById(book.getAuthorId());
         if (optionalAuthor.isPresent()) return optionalAuthor.get();
         return null;
+    }
+
+    @SchemaMapping
+    public Publisher publisher(Book book) {
+        Optional<Publisher> returnVal = publisherRepository.findById(book.getPublisherId());
+        if (returnVal.isPresent()) {
+            return returnVal.get();
+        } else {
+            return null;
+        }
     }
 
     @QueryMapping
