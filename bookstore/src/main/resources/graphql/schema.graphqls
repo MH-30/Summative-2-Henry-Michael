@@ -26,10 +26,10 @@ type Book {
     bookId: ID
     isbn: String
     publish_date: String
-    authorId: ID
     title: String
     publisherId: ID
     price: Int
+    author: Author
 }
 
 type Query {
